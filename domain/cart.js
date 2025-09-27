@@ -20,7 +20,7 @@ class Cart {
     this.items.push(new CartItem(productId, price, quantity));
  }
 
-  removeltem(productId) {
+  removeItem(productId) {
     this.items = this.items.filter(i => i.productId !== productId);
  }
 
@@ -28,3 +28,4 @@ class Cart {
     return this.items.reduce((sum, item) => sum + item.getTotal(), 0);
  }
 }
+
