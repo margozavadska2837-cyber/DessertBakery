@@ -19,4 +19,8 @@ class Customer {
   getOrderHistory() {
     return this.orders;
   }
+
+  leaveReview(product, review) {
+    product.addReview(review);
+  }
 }
