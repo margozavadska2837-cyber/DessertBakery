@@ -24,3 +24,4 @@ class Customer {
     product.addReview(review);
   }
 }
+
