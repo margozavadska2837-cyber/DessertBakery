@@ -16,7 +16,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DessertResponse' # Використовуємо DTO відповіді
+                  $ref: '#/components/schemas/DessertResponse' 
     post:
       summary: Створити новий десерт
       requestBody:
@@ -24,7 +24,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DessertCreate' # Використовуємо DTO для створення
+              $ref: '#/components/schemas/DessertCreate' 
       responses:
         '201':
           description: Десерт створено
@@ -33,7 +33,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DessertResponse'
         '400':
-          $ref: '#/components/responses/BadRequestError' # Додаємо посилання на 400
+          $ref: '#/components/responses/BadRequestError' 
 
   /desserts/{id}:
     parameters:
@@ -53,7 +53,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DessertResponse'
         '404':
-          $ref: '#/components/responses/NotFoundError' # Використовуємо єдиний формат помилки
+          $ref: '#/components/responses/NotFoundError' 
     put:
       summary: Оновити десерт
       requestBody:
@@ -61,7 +61,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DessertUpdate' # DTO для оновлення (якщо відрізняється)
+              $ref: '#/components/schemas/DessertUpdate' 
       responses:
         '200':
           description: Десерт оновлено
@@ -82,8 +82,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
 components:
-  schemas:
-    # 1. DTO для відповіді - 
+  schemas: 
     DessertResponse:
       type: object
       required:
@@ -108,7 +107,6 @@ components:
           format: uri
           example: "https://dessertbakery.com/images/tiramisu.jpg"
 
-    # 2. DTO для створення 
     DessertCreate:
       type: object
       required:
@@ -129,11 +127,9 @@ components:
           format: uri
           example: "https://dessertbakery.com/images/tiramisu.jpg"
 
-    # 3. DTO для оновлення 
     DessertUpdate:
       $ref: '#/components/schemas/DessertCreate'
 
-    # 4. Єдиний формат помилки (ErrorResponse)
     ErrorResponse:
       type: object
       properties:
