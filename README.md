@@ -24,3 +24,10 @@ CREATE DATABASE DessertBakery;
 node server.js
 # або
 npm start
+
+
+## API документація
+
+[Специфікація OpenAPI (YAML)](docs/api/openapi.yaml)
+
+![Скріншот Swagger UI](docs/api/swagger_screenshot.png)

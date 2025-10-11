@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: DessertBakery API
+  version: 1.0.0
+  description: API для керування десертами на сайті DessertBakery.
+
+paths:
+  /desserts:
+    get:
+      summary: Отримати список десертів
+      responses:
+        '200':
+          description: Список десертів
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DessertResponse' # Використовуємо DTO відповіді
+    post:
+      summary: Створити новий десерт
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DessertCreate' # Використовуємо DTO для створення
+      responses:
+        '201':
+          description: Десерт створено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DessertResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError' # Додаємо посилання на 400
+
+  /desserts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Унікальний ідентифікатор десерту
+    get:
+      summary: Отримати деталі десерту
+      responses:
+        '200':
+          description: Деталі десерту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DessertResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError' # Використовуємо єдиний формат помилки
+    put:
+      summary: Оновити десерт
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DessertUpdate' # DTO для оновлення (якщо відрізняється)
+      responses:
+        '200':
+          description: Десерт оновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DessertResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      summary: Видалити десерт
+      responses:
+        '204':
+          description: Десерт видалено (Немає контенту)
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+components:
+  schemas:
+    # 1. DTO для відповіді - 
+    DessertResponse:
+      type: object
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: string
+          description: Унікальний ідентифікатор
+        name:
+          type: string
+          example: "Тірамісу"
+        price:
+          type: number
+          example: 75.50
+        description:
+          type: string
+          example: "Класичний італійський десерт з маскарпоне"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://dessertbakery.com/images/tiramisu.jpg"
+
+    # 2. DTO для створення 
+    DessertCreate:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+          example: "Тірамісу"
+        price:
+          type: number
+          example: 75.50
+        description:
+          type: string
+          example: "Класичний італійський десерт з маскарпоне"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://dessertbakery.com/images/tiramisu.jpg"
+
+    # 3. DTO для оновлення 
+    DessertUpdate:
+      $ref: '#/components/schemas/DessertCreate'
+
+    # 4. Єдиний формат помилки (ErrorResponse)
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Короткий код помилки (наприклад, NOT_FOUND, VALIDATION_ERROR)
+        message:
+          type: string
+          description: Зрозуміле людині повідомлення про помилку
+
+  responses:
+    NotFoundError:
+      description: Ресурс не знайдено (404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: DESSERT_NOT_FOUND
+            message: Десерт з вказаним ID не знайдено.
+    
+    BadRequestError:
+      description: Некоректний запит або помилка валідації (400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: VALIDATION_ERROR
+            message: 'Помилка валідації: Поле "price" має бути додатним числом.'
