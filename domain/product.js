@@ -1,9 +1,14 @@
+// domain/product.js
 class Product {
-  constructor(id, name, price, stock) {
+  constructor({ id, name, description, price, currency, stock, createdAt, updatedAt }) {
     this.id = id;
     this.name = name;
+    this.description = description || '';
     this.price = price;
-    this.stock = stock;
+    this.currency = currency || 'UAH';
+    this.stock = stock || 0;
+    this.createdAt = createdAt || new Date().toISOString();
+    this.updatedAt = updatedAt || new Date().toISOString();
     this.reviews = [];
   }
 
@@ -23,3 +28,5 @@ class Product {
     this.reviews.push(review);
   }
 }
+
+module.exports = Product;

@@ -1,38 +1,49 @@
 openapi: 3.0.3
 info:
-  title: DessertBakeryAPI
+  title: Dessert & Bakery API
   version: 1.0.0
+  description: CRUD API для управління продуктами (десертами)
+servers:
+  - url: http://localhost:3000
+
 paths:
   /products:
     get:
-      summary: Get all products
+      summary: Отримати список продуктів
       responses:
         '200':
-          description: List of products
+          description: Список продуктів
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProductResponse'
+                  $ref: '#/components/schemas/Product'
     post:
-      summary: Create product
+      summary: Створити новий продукт
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductCreateRequest'
+              $ref: '#/components/schemas/ProductCreateDTO'
       responses:
         '201':
-          description: Product created
+          description: Продукт створено
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductResponse'
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Некоректні дані
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /products/{id}:
     get:
-      summary: Get product by ID
+      summary: Отримати продукт за ID
       parameters:
         - name: id
           in: path
@@ -41,19 +52,19 @@ paths:
             type: string
       responses:
         '200':
-          description: Product details
+          description: Знайдено
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductResponse'
+                $ref: '#/components/schemas/Product'
         '404':
-          description: Not found
+          description: Не знайдено
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
-      summary: Update product
+      summary: Оновити продукт
       parameters:
         - name: id
           in: path
@@ -65,28 +76,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductUpdateRequest'
+              $ref: '#/components/schemas/ProductUpdateDTO'
       responses:
         '200':
-          description: Updated product
+          description: Оновлено
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductResponse'
+                $ref: '#/components/schemas/Product'
         '400':
-          description: Bad request
+          description: Некоректні дані
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Not found
+          description: Не знайдено
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
-      summary: Delete product
+      summary: Видалити продукт
       parameters:
         - name: id
           in: path
@@ -95,64 +106,83 @@ paths:
             type: string
       responses:
         '204':
-          description: No content
+          description: Видалено
         '404':
-          description: Not found
+          description: Не знайдено
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /health:
+    get:
+      summary: Перевірка стану сервісу
+      responses:
+        '200':
+          description: Сервіс працює
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+
 components:
   schemas:
-    ProductCreateRequest:
-      type: object
-      required:
-        - title
-        - price
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        price:
-          type: number
-          format: float
-    ProductUpdateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        price:
-          type: number
-          format: float
-    ProductResponse:
+    Product:
       type: object
       properties:
         id:
           type: string
-        title:
+          example: "1"
+        name:
           type: string
         description:
           type: string
         price:
           type: number
-          format: float
+        currency:
+          type: string
+          example: "UAH"
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
+    ProductCreateDTO:
+      type: object
+      required: [name, price]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          example: "UAH"
+    ProductUpdateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          example: "UAH"
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
+          example: "ApiError"
         code:
           type: string
+          example: "VALIDATION_ERROR"
         details:
           type: array
           items:
@@ -160,5 +190,7 @@ components:
             properties:
               field:
                 type: string
+                example: "name"
               message:
                 type: string
+                example: "Name is required"

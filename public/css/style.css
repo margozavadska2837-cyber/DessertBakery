@@ -430,3 +430,52 @@ section { padding: 60px 80px; }
 .footer .links a:hover{
   background: var(--accent-dark);
 }
+
+.review {
+  background: var(--bg);
+}
+
+.review .box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.review .box-container .box {
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+  padding: 30px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review .box-container .box p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  padding: 20px 0;
+}
+
+.review .box-container .box .user {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+
+.review .box-container .box h3 {
+  padding: 10px 0;
+  font-size: 20px;
+  color: var(--accent-dark);
+}
+
+.review .box-container .box .stars i {
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.review .box-container .box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
