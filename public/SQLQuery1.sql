@@ -13,14 +13,10 @@ CREATE TABLE Categories (
 );
 
 CREATE TABLE Products (
-    ProductID INT IDENTITY PRIMARY KEY,
-    Name NVARCHAR(150)        NOT NULL,
-    Description NVARCHAR(500) NULL,
-    Price DECIMAL(10,2)       NOT NULL,
-    OldPrice DECIMAL(10,2)    NULL,
-    ImageUrl NVARCHAR(255)    NULL,
-    CategoryID INT            NULL
-        FOREIGN KEY REFERENCES Categories(CategoryID)
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+  Name NVARCHAR(100),
+  Description NVARCHAR(255),
+  Price DECIMAL(10,2)
 );
 
 CREATE TABLE Orders (
@@ -29,7 +25,7 @@ CREATE TABLE Orders (
         FOREIGN KEY REFERENCES Users(UserID),
     OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
     Total DECIMAL(10,2) NOT NULL,
-    Status NVARCHAR(30) NOT NULL DEFAULT 'Нове'
+    Status NVARCHAR(30) NOT NULL DEFAULT 'пїЅпїЅпїЅпїЅ'
 );
 
 CREATE TABLE OrderItems (
@@ -37,7 +33,7 @@ CREATE TABLE OrderItems (
     OrderID INT NOT NULL
         FOREIGN KEY REFERENCES Orders(OrderID) ON DELETE CASCADE,
     ProductID INT NOT NULL
-        FOREIGN KEY REFERENCES Products(ProductID),
+        FOREIGN KEY REFERENCES Products(Id)
     Quantity INT NOT NULL CHECK (Quantity > 0),
     Price DECIMAL(10,2) NOT NULL
 );
@@ -52,13 +48,13 @@ CREATE TABLE Contacts (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
--- Категорії
+-- пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 INSERT INTO Categories (CategoryName)
-VALUES (N'Торти'), (N'Чизкейки'), (N'Круасани'), (N'Інше');
+VALUES (N'пїЅпїЅпїЅпїЅпїЅ'), (N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'), (N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'), (N'пїЅпїЅпїЅпїЅ');
 
--- Продукти (для тесту)
+-- пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
 INSERT INTO Products (Name, Description, Price, OldPrice, ImageUrl, CategoryID)
 VALUES
- (N'Торт Наполеон', N'Класичний багатошаровий торт', 150, 180, N'images/napoleon.jpg', 1),
- (N'Чизкейк Класичний', N'Ніжний сирний десерт', 100, 120, N'images/cheesecake.jpg', 2),
- (N'Круасан Французький', N'Свіжий хрусткий круасан', 160, 200, N'images/croissant.jpg', 3);
+ (N'пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ', 150, 180, N'images/napoleon.jpg', 1),
+ (N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', N'НіпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ', 100, 120, N'images/cheesecake.jpg', 2),
+ (N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', N'пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 160, 200, N'images/croissant.jpg', 3);

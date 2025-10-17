@@ -80,3 +80,7 @@ build/Release
 lib-cov
 .serverless/
 .tern-port
+
+node_modules/
+.env
+.DS_Store
