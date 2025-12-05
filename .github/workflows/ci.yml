@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  ci:
+    uses: ./.github/workflows/reusable_ci.yml
+    with:
+      node-version: "20"
+
+  docker:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    concurrency:
+      group: cd-main
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image tags
+        run: |
+          VERSION=v1.0.${{ github.run_number }}
+          SHA=sha-${GITHUB_SHA::8}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "SHA=$SHA" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} .
+          docker tag ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} \
+                     ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION}
+          docker push ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}
+
+      - name: Save image as artifact (TAR)
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: |
+            image.tar
+        run: docker save ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} -o image.tar
+
+      - name: Job Summary
+        run: |
+          echo "## ✔ CD Completed" >> $GITHUB_STEP_SUMMARY
+          echo "Published images:" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}\`" >> $GITHUB_STEP_SUMMARY

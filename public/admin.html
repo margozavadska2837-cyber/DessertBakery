@@ -72,7 +72,6 @@
     gap:16px;
   }
 
-  /* Картка продукту */
   .box {
     background:#fff;
     border-radius:12px;
@@ -117,7 +116,6 @@
     color: var(--accent-dark);
   }
 
-  /* Іконки дій */
   .icons {
     display:flex;
     gap:8px;
@@ -137,7 +135,6 @@
     color: var(--accent-dark);
   }
 
-  /* Modal */
   .modal {
     position:fixed;
     left:0; top:0; right:0; bottom:0;
@@ -170,9 +167,13 @@
   </style>
 </head>
 <body>
+
+  <div id="degraded-banner" style="display:none; color:red; font-weight:bold; margin-bottom:10px;">
+  Сервіс перевантажений, спробуйте пізніше
+</div>
+
   <h1>Адмін — Продукти</h1>
 
-  <!-- Додати продукт -->
   <section class="add-section">
     <h2>Додати новий продукт</h2>
     <div class="controls">
@@ -185,7 +186,6 @@
     </div>
   </section>
 
-  <!-- Список продуктів -->
   <section class="products">
     <div class="controls" style="justify-content:space-between;">
       <h2>Список продуктів</h2>
@@ -199,7 +199,6 @@
     </div>
   </section>
 
-  <!-- Modal -->
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <h3 id="modal-title">Перегляд продукту</h3>
