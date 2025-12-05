@@ -1,6 +1,6 @@
 // service/productService.js
-// const repo = require('../db/productRepository');
-const repo = require('../db/productRepositoryInMemory');
+const repo = require('../db/productRepository');
+// const repo = require('../db/productRepositoryInMemory');
 
 const ApiError = require('../errors/errorResponse');
 
@@ -68,7 +68,7 @@ async function deleteProduct(id) {
 module.exports = {
   createProduct,
   getAllProducts,
-  getProductById, // тепер точно співпадає
+  getProductById, 
   updateProduct,
   deleteProduct
 };

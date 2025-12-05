@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../service/productService'); // in-memory repo
+const service = require('../service/productService'); 
+const crypto = require('crypto');
 
-// GET all products
+const idemStore = new Map(); 
+
 router.get('/', async (req, res, next) => {
   try {
     const products = await service.getAllProducts();
@@ -12,40 +14,48 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET product by id <-- Ось що треба додати
 router.get('/:id', async (req, res, next) => {
   try {
     const product = await service.getProductById(req.params.id);
+    if (!product) return res.status(404).json({ error: 'not_found', requestId: req.rid });
     res.json(product);
   } catch (err) {
     next(err);
   }
 });
 
-// POST new product
 router.post('/', async (req, res, next) => {
   try {
+    const key = req.get('Idempotency-Key');
+    const rid = req.rid || crypto.randomUUID();
+    if (!key) return res.status(400).json({ error: 'idempotency_key_required', requestId: rid });
+
+    if (idemStore.has(key)) {
+      return res.status(201).json({ ...idemStore.get(key), requestId: rid });
+    }
+
     const product = await service.createProduct(req.body);
-    res.status(201).json(product);
+    idemStore.set(key, product);
+    res.status(201).json({ ...product, requestId: rid });
   } catch (err) {
     next(err);
   }
 });
 
-// PUT /:id
 router.put('/:id', async (req, res, next) => {
   try {
     const updated = await service.updateProduct(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'not_found', requestId: req.rid });
     res.json(updated);
   } catch (err) {
     next(err);
   }
 });
 
-// DELETE /:id
 router.delete('/:id', async (req, res, next) => {
   try {
-    await service.deleteProduct(req.params.id);
+    const deleted = await service.deleteProduct(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'not_found', requestId: req.rid });
     res.status(204).send();
   } catch (err) {
     next(err);
