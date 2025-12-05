@@ -21,6 +21,7 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+
     permissions:
       contents: read
       packages: write
@@ -48,26 +49,27 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} .
-          docker tag ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} \
-                     ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}
+          docker build -t ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION} .
+          docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION} \
+                     ghcr.io/${{ github.repository_owner }}/dessertbakery:${SHA}
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION}
-          docker push ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}
+          docker push ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION}
+          docker push ghcr.io/${{ github.repository_owner }}/dessertbakery:${SHA}
 
-      - name: Save image as artifact (TAR)
+      - name: Save TAR image
+        run: docker save ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION} -o image.tar
+
+      - name: Upload image artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
-          path: |
-            image.tar
-        run: docker save ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION} -o image.tar
+          path: image.tar
 
       - name: Job Summary
         run: |
-          echo "## ✔ CD Completed" >> $GITHUB_STEP_SUMMARY
+          echo "## CD Completed" >> $GITHUB_STEP_SUMMARY
           echo "Published images:" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ github.repository_owner }}/food-catalog:${VERSION}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ github.repository_owner }}/food-catalog:${SHA}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ github.repository_owner }}/dessertbakery:${SHA}\`" >> $GITHUB_STEP_SUMMARY
