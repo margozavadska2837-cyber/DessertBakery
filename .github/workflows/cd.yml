@@ -37,8 +37,7 @@ jobs:
         run: docker build -t ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} .
 
       - name: Tag backend image
-        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} \
-                        ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${SHA}
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${SHA}
 
       - name: Push backend image
         run: |
@@ -52,8 +51,7 @@ jobs:
         run: docker build -f Dockerfile.frontend -t ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} .
 
       - name: Tag frontend image
-        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} \
-                        ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${SHA}
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${SHA}
 
       - name: Push frontend image
         run: |
@@ -67,8 +65,7 @@ jobs:
         run: docker build -f db/Dockerfile -t ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} db
 
       - name: Tag db image
-        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} \
-                        ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${SHA}
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${SHA}
 
       - name: Push db image
         run: |
