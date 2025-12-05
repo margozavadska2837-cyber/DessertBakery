@@ -12,11 +12,7 @@ permissions:
 jobs:
   cd:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    concurrency:
-      group: cd-main
-      cancel-in-progress: true
+    timeout-minutes: 60
 
     steps:
       - name: Checkout code
@@ -37,32 +33,50 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "SHA=$SHA" >> $GITHUB_ENV
 
-      - name: Build and push backend image
+      - name: Build backend image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} .
+
+      - name: Tag backend image
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} \
+                        ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${SHA}
+
+      - name: Push backend image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} .
-          docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} \
-                     ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${SHA}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${SHA}
-          docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} -o backend.tar
 
-      - name: Build and push frontend image
+      - name: Save backend TAR
+        run: docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-backend:${VERSION} -o backend.tar
+
+      - name: Build frontend image
+        run: docker build -f Dockerfile.frontend -t ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} .
+
+      - name: Tag frontend image
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} \
+                        ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${SHA}
+
+      - name: Push frontend image
         run: |
-          docker build -f Dockerfile.frontend -t ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} .
-          docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} \
-                     ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${SHA}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${SHA}
-          docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} -o frontend.tar
 
-      - name: Build and push db image
+      - name: Save frontend TAR
+        run: docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-frontend:${VERSION} -o frontend.tar
+
+      - name: Build db image
+        run: docker build -f db/Dockerfile -t ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} db
+
+      - name: Tag db image
+        run: docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} \
+                        ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${SHA}
+
+      - name: Push db image
         run: |
-          docker build -f db/Dockerfile -t ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} db
-          docker tag ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} \
-                     ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${SHA}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION}
           docker push --quiet ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${SHA}
-          docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} -o db.tar
+
+      - name: Save db TAR
+        run: docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} -o db.tar
 
       - name: Upload TAR artifacts
         uses: actions/upload-artifact@v4
