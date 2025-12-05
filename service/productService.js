@@ -1,4 +1,3 @@
-// service/productService.js
 const repo = require('../db/productRepository');
 // const repo = require('../db/productRepositoryInMemory');
 
