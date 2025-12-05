@@ -1,6 +1,6 @@
-# 🎂 DessertBakery (Food Catalog) — повний CI/CD
+# DessertBakery (Food Catalog) — повний CI/CD
 
-![CI/CD Status](https://github.com/<YOUR-USER>/DessertBakery/actions/workflows/ci.yml/badge.svg)
+[CI/CD Status](https://github.com/<YOUR-USER>/DessertBakery/actions/workflows/ci.yml/badge.svg)
 
 Каталог десертів на Node.js + Express + MSSQL із повним CI/CD у GitHub Actions.
 
