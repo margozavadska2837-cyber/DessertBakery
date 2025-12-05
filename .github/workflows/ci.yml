@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
   packages: write
-  security-events: none
+  security-events: write
 
 jobs:
   ci:

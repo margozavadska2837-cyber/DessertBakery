@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      security-events: none   
+      security-events: none
 
     concurrency:
       group: ci-${{ github.ref }}
