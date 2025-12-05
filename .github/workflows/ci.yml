@@ -73,3 +73,4 @@ jobs:
           echo "Published images:" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ github.repository_owner }}/dessertbakery:${VERSION}\`" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ github.repository_owner }}/dessertbakery:${SHA}\`" >> $GITHUB_STEP_SUMMARY
+          
