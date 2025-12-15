@@ -76,7 +76,7 @@ jobs:
         run: docker save ghcr.io/${{ github.repository_owner }}/dessertbakery-db:${VERSION} -o db.tar
 
       - name: Upload TAR artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: docker-images
           path: |
